@@ -1,11 +1,32 @@
 package com.naigan.irs.model;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 public class User {
+
+    @NotNull(message="UserId must not be blank")
+    @Size(min = 4,max=15,message = "UserId must between 4 to 15 characters")
     private String userId;
+
+    @NotNull(message="password must not be blank")
+    @Size(min = 8,max=15,message = "UserId must between 8 to 15 characters")
     private String password;
+
+    @NotNull(message="Name must not be blank")
+    @Size(min = 4,max=15,message = "Name must between 4 to 15 characters")
     private String name;
+
+    @NotNull(message="City must not be blank")
     private String city;
+
+    @NotNull(message="Email must not be blank")
+    @Email
     private String email;
+
+    @NotNull(message="PhoneNumber must not be blank")
+    @Size(min = 10,max=10,message = "Phone Number must be 10 digits")
     private String phone;
 
     public String getUserId() {
