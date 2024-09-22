@@ -4,6 +4,7 @@ import com.naigan.irs.exception.UserAlreadyPresentException;
 import com.naigan.irs.model.User;
 import com.naigan.irs.service.RegistrationService;
 import jakarta.validation.Valid;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.logging.Logger;
 
 @Controller
 public class RegistrationController {
@@ -36,6 +39,7 @@ public class RegistrationController {
     @PostMapping(value="registerUser")
     public ModelAndView addCustomer(@Valid @ModelAttribute("command") User user, BindingResult result,
                                     ModelMap model){
+        final Logger logger;
         ModelAndView modelAndView=new ModelAndView();
         if(result.hasErrors()){
             modelAndView= new ModelAndView(register,command,user);
@@ -46,12 +50,15 @@ public class RegistrationController {
                 modelAndView.addObject("successMessage",
                         environment.getProperty("Registrationcontroller.SUCCESSFUL_REGISTRATION"));
             } catch(UserAlreadyPresentException e){
+                //logger= LoggerFactory.getLogger(this.getClass());
+                logger= (Logger) LoggerFactory.getLogger(this.getClass());
                 if(e.getMessage().contains("RegistrationService")){
                     modelAndView =new ModelAndView(register);
                     modelAndView.addObject(command,user);
                     modelAndView.addObject("message",
                             environment.getProperty(e.getMessage()));
                 }
+                ((org.slf4j.Logger) logger).error(e.getMessage(),e);
             }
         }
         return  modelAndView;
